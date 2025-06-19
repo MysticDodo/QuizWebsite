@@ -1,0 +1,98 @@
+﻿@model Quiz
+@{
+    ViewData["Title"] = "Import or Create Quiz";
+}
+
+<h1 class="display-4">@ViewData["Title"]</h1>
+
+<h2 class="mt-5">Import Quiz from JSON</h2>
+<form asp-action="ImportQuiz" asp-controller="Quiz" enctype="multipart/form-data" method="post">
+    <div class="mb-3">
+        <label for="jsonFile" class="form-label">Upload JSON File</label>
+        <input type="file" name="jsonFile" accept=".json" class="form-control" required />
+    </div>
+    <button type="submit" class="btn btn-primary">Import Quiz</button>
+</form>
+
+<h1 class="mt-5">Or</h1>
+<h2 class="mt-5">Create a New Quiz</h2>
+
+<form asp-action="SaveQuiz" asp-asp-controller="Quiz" method="post">
+    <div class="mb-3">
+        <label asp-for="Title" class="form-label">Quiz Title</label>
+        <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Description" class="form-label">Description</label>
+        <textarea asp-for="Description" class="form-control"></textarea>
+    </div>
+
+    <input type="hidden" name="IsSubmitted" value="false" />
+
+    <div id="questions-section">
+        <!-- Questions will be added dynamically -->
+    </div>
+
+    <button type="button" class="btn btn-outline-secondary" id="add-question-btn">Add Question</button>
+    <br /><br />
+
+    <button type="submit" class="btn btn-primary">Save Quiz</button>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        let questionIndex = 0;
+
+        function createOptionHTML(qIndex, oIndex) {
+            return `
+                <div class="option-item d-flex align-items-center mb-1" data-option-index="${oIndex}">
+                    <input type="text" name="Questions[${qIndex}].Options[${oIndex}].Text" class="form-control me-2" placeholder="Option text" />
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="Questions[${qIndex}].Options[${oIndex}].IsCorrect" value="true" />
+                        <label class="form-check-label">Correct</label>
+                    </div>
+                </div>
+            `;
+        }
+
+        function createQuestionBlock(qIndex) {
+            const questionBlock = document.createElement('div');
+            questionBlock.className = 'question-block border p-3 mb-4';
+            questionBlock.dataset.questionIndex = qIndex;
+
+            questionBlock.innerHTML = `
+                <div class="mb-2">
+                    <label>Question Text</label>
+                    <input name="Questions[${qIndex}].Text" class="form-control" placeholder="Enter question text" />
+                </div>
+
+                <div class="options-section mb-2" id="options-${qIndex}">
+                    ${createOptionHTML(qIndex, 0)}
+                    ${createOptionHTML(qIndex, 1)}
+                </div>
+
+                <button type="button" class="btn btn-sm btn-outline-secondary add-option-btn" data-qindex="${qIndex}">Add Option</button>
+            `;
+
+            return questionBlock;
+        }
+
+        document.getElementById('add-question-btn').addEventListener('click', function () {
+            const section = document.getElementById('questions-section');
+            section.appendChild(createQuestionBlock(questionIndex));
+            questionIndex++;
+        });
+
+        document.getElementById('questions-section').addEventListener('click', function (e) {
+            if (e.target.classList.contains('add-option-btn')) {
+                const qIndex = e.target.dataset.qindex;
+                const optionsDiv = document.getElementById(`options-${qIndex}`);
+                const nextOptionIndex = optionsDiv.querySelectorAll('.option-item').length;
+                optionsDiv.insertAdjacentHTML('beforeend', createOptionHTML(qIndex, nextOptionIndex));
+            }
+        });
+    </script>
+}

@@ -1,0 +1,124 @@
+html {
+    font-size: 14px;
+    position: relative;
+    min-height: 100%;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+body {
+    margin-bottom: 60px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.btn:focus,
+.btn:active:focus,
+.btn-link.nav-link:focus,
+.form-control:focus,
+.form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+/* ==== DARK MODE STYLES ==== */
+
+html[data-bs-theme="dark"] body {
+    background-color: #121212;
+    color: #f1f1f1;
+}
+
+html[data-bs-theme="dark"] .navbar,
+html[data-bs-theme="dark"] .footer {
+    background-color: #1f1f1f !important;
+    color: #f1f1f1 !important;
+}
+
+html[data-bs-theme="dark"] .navbar-brand,
+html[data-bs-theme="dark"] .theme-toggle {
+    color: #f1f1f1 !important;
+}
+
+html[data-bs-theme="dark"] .nav-link {
+    color: #ccc !important;
+}
+
+    html[data-bs-theme="dark"] .nav-link.active {
+        color: #0d6efd !important;
+        font-weight: bold;
+    }
+
+html[data-bs-theme="dark"] .table {
+    color: #fff;
+}
+
+html[data-bs-theme="dark"] .form-control,
+html[data-bs-theme="dark"] .form-check-input {
+    background-color: #1e1e1e;
+    color: #f1f1f1;
+    border-color: #444;
+}
+
+    html[data-bs-theme="dark"] .form-control:focus {
+        background-color: #2a2a2a;
+        color: #fff;
+        border-color: #555;
+    }
+
+html[data-bs-theme="dark"] .btn {
+    background-color: #2a2a2a;
+    color: #f1f1f1;
+    border-color: #555;
+}
+
+    html[data-bs-theme="dark"] .btn:hover {
+        background-color: #3a3a3a;
+        border-color: #777;
+    }
+
+html[data-bs-theme="dark"] .btn-primary {
+    background-color: #0d6efd !important;
+    border-color: #0d6efd !important;
+    color: #fff !important;
+}
+
+html[data-bs-theme="dark"] .btn-success {
+    background-color: #198754 !important;
+    color: white !important;
+}
+
+    html[data-bs-theme="dark"] .btn-success:hover {
+        background-color: #157347 !important;
+    }
+
+html[data-bs-theme="dark"] .btn-danger {
+    background-color: #dc3545 !important;
+    color: white !important;
+}
+
+    html[data-bs-theme="dark"] .btn-danger:hover {
+        background-color: #bb2d3b !important;
+    }
+
+html[data-bs-theme="dark"] .btn-light {
+    background-color: #777 !important;
+    color: #fff !important;
+    border-color: #999 !important;
+}
+
+html[data-bs-theme="dark"] .quiz-theme {
+    background: url('/images/quiz-bg-dark.svg') no-repeat center top;
+    background-size: contain;
+}
+html[data-bs-theme="dark"] .btn-info {
+    background-color: #17a2b8 !important; /* Classic Bootstrap info color */
+    border-color: #138496 !important;
+    color: #fff !important;
+}
+
+    html[data-bs-theme="dark"] .btn-info:hover {
+        background-color: #138496 !important;
+        border-color: #117a8b !important;
+    }

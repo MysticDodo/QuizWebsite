@@ -1,0 +1,49 @@
+﻿@model Quiz
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<h1 class="display-4">@ViewData["Title"]</h1>
+<p>@Model.Description</p>
+
+<form asp-controller="Quiz" asp-action="SubmitQuiz" method="post">
+    <input type="hidden" name="Id" value="@Model.Id" />
+    <input type="hidden" name="Title" value="@Model.Title" />
+    <input type="hidden" name="Description" value="@Model.Description" />
+    <input type="hidden" name="IsSubmitted" value="false" />
+
+    <div class="quiz-questions">
+        @for (int i = 0; i < Model.Questions.Count; i++)
+        {
+            var question = Model.Questions[i];
+
+            <div class="question mb-3">
+                <input type="hidden" name="Questions[@i].Id" value="@question.Id" />
+                <input type="hidden" name="Questions[@i].Text" value="@question.Text" />
+                <input type="hidden" name="Questions[@i].QuizId" value="@question.QuizId" />
+
+                <h4>@question.Text</h4>
+                <ul class="options">
+                    @for (int j = 0; j < question.Options.Count; j++)
+                    {
+                        var option = question.Options[j];
+                        <li>
+                            <input type="hidden" name="Questions[@i].Options[@j].Id" value="@option.Id" />
+                            <input type="hidden" name="Questions[@i].Options[@j].Text" value="@option.Text" />
+                            <input type="hidden" name="Questions[@i].Options[@j].QuestionId" value="@option.QuestionId" />
+                            <input type="hidden" name="Questions[@i].Options[@j].IsCorrect" value="@(option.IsCorrect.ToString().ToLower())" />
+
+                            <input type="radio"
+                                   name="Questions[@i].ChosenOption"
+                                   value="@option.Id"
+                                   @(question.ChosenOption == option.Id ? "checked" : "") />
+                            <label>@option.Text</label>
+                        </li>
+                    }
+                </ul>
+            </div>
+        }
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit Quiz</button>
+</form>

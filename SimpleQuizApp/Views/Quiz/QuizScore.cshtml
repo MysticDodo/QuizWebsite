@@ -1,0 +1,12 @@
+﻿@model SimpleQuizApp.Models.Quiz
+@{
+    ViewData["Title"] = "Quiz Score";
+}
+<div class="text-center">
+    <h1 class="display-4">Quiz Score</h1>
+	<p>Thank you for taking the quiz!</p>
+    <p>Your score is: <strong>@Model.TotalScore</strong></p>
+    <p>Quiz Title: <strong>@Model.Title</strong></p>
+    <p>Quiz Description: <strong>@Model.Description</strong></p>
+	<a asp-action="UserQUiz" class="btn btn-primary">Back to Quizzes</a>
+</div>
