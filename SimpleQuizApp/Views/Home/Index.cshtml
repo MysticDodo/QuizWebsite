@@ -1,8 +1,45 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Welcome";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="text-center mt-5">
+    <h1 class="display-4">🧠 Welcome to SimpleQuizApp!</h1>
+    <p class="lead">Create, take, and challenge yourself with quizzes.</p>
+
+    <div class="mt-4">
+        <a asp-controller="Quiz" asp-action="UserQuiz" class="btn btn-primary btn-lg me-2">My Quizzes</a>
+        <a asp-controller="Quiz" asp-action="NewQuiz" class="btn btn-outline-secondary btn-lg">New Quiz</a>
+    </div>
 </div>
+
+<hr class="my-5" />
+
+<section class="container">
+    <h2 class="text-center mb-4">How It Works</h2>
+    <div class="row text-center">
+        <div class="col-md-4">
+            <div class="p-3 border rounded shadow-sm bg-body">
+                <h4>1. Pick or Create</h4>
+                <p>Select a quiz from the pre-made list or create a new one with custom questions.</p>
+            </div>
+        </div>
+        <div class="col-md-4 mt-4 mt-md-0">
+            <div class="p-3 border rounded shadow-sm bg-body">
+                <h4>2. Answer</h4>
+                <p>Go through the questions and choose your answers. Save progress anytime.</p>
+            </div>
+        </div>
+        <div class="col-md-4 mt-4 mt-md-0">
+            <div class="p-3 border rounded shadow-sm bg-body">
+                <h4>3. See Your Score</h4>
+                <p>Submit the quiz and instantly see how you performed.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<hr class="my-5" />
+
+<footer class="text-center text-muted small">
+    <p>Ready to get started? Hit <strong>New Quiz</strong> or <strong>My Quizzes</strong> above.</p>
+</footer>

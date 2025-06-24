@@ -42,7 +42,7 @@ namespace SimpleQuizApp.Controllers
 
         // Submit quiz answers
         [HttpPost]
-        public IActionResult SubmitQuiz([FromForm] Quiz quiz)
+        public IActionResult SubmitQuiz([FromForm] Quiz quiz, string actionType)
         {
 
             // Check if form is valid
@@ -62,25 +62,38 @@ namespace SimpleQuizApp.Controllers
                 // Re-show the form
                 return View("OpenQuiz", quiz);
             }
-            // Logic to handle quiz submission
-            quiz.TotalScore = 0; // Initialize total score
-            // Loops through questions and options to check answers
-            foreach (var question in quiz.Questions)
+            // Check if quiz is submitted or saved
+            if (actionType == "save")
             {
-                foreach (var option in question.Options)
-                {
-                    if (option.Id == question.ChosenOption && option.IsCorrect)
-                    {
-                        quiz.TotalScore++; // Increment score for correct answer
-                    }
-                }
-                _logger.LogInformation(question.ChosenOption.ToString());
-                
+                // Logic to save quiz without submission
+                quiz.IsSubmitted = false; // Mark quiz as not submitted
+                _user_quiz_context.Quizzes.Update(quiz); // Update quiz in the user quiz database
+                _user_quiz_context.SaveChanges();
+                return RedirectToAction("UserQuiz");
             }
-            quiz.IsSubmitted = true; // Mark quiz as submitted
-            _user_quiz_context.Quizzes.Update(quiz); // Update quiz with total score
-            _user_quiz_context.SaveChanges();
-            return RedirectToAction("QuizScore",quiz);
+            else if (actionType == "submit")
+            {
+                // Logic to handle quiz submission
+                quiz.TotalScore = 0; // Initialize total score
+                                     // Loops through questions and options to check answers
+                foreach (var question in quiz.Questions)
+                {
+                    foreach (var option in question.Options)
+                    {
+                        if (option.Id == question.ChosenOption && option.IsCorrect)
+                        {
+                            quiz.TotalScore++; // Increment score for correct answer
+                        }
+                    }
+                    _logger.LogInformation(question.ChosenOption.ToString());
+
+                }
+                quiz.IsSubmitted = true; // Mark quiz as submitted
+                _user_quiz_context.Quizzes.Update(quiz); // Update quiz with total score
+                _user_quiz_context.SaveChanges();
+                return RedirectToAction("OpenQuiz", new { id = quiz.Id });
+            }
+            return View(quiz);
         }
 
         // Display quiz score

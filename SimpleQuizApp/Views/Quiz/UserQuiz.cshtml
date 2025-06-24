@@ -8,39 +8,51 @@
 
 </div>
 
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Title</th>
-            <th>Description</th>
-            <th style="width: 180px;">Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var quiz in Model)
+@if (Model.Count == 0 || Model==null)
         {
-            <tr>
-                <td>@quiz.Title</td>
-                <td>@quiz.Description</td>
-                <td>
-                    @if (quiz.IsSubmitted)
-                    {
-                        <span class="badge bg-success">Submitted</span>
-                        <p>Total Score: @quiz.TotalScore</p>
-                        @* <a asp-action="OpenQuiz" asp-route-id="@quiz.Id" class="btn btn-sm btn-info">View</a> *@
-
-
-                    }
-                    else
-                    {
-                        <span class="badge bg-secondary">Not Submitted</span>
-                        <a asp-action="OpenQuiz" asp-route-id="@quiz.Id" class="btn btn-sm btn-info">Open</a>
-					}
-                    <form asp-action="DeleteUserQuiz" asp-route-id="@quiz.Id" method="post" style="display:inline" onsubmit="return confirm('Are you sure you want to delete this quiz?');">
-                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-                    </form>
-                </td>
-            </tr>
+            <div class="text-center my-5">
+                <h3>You have no quizzes yet.</h3>
+                <p>Start by adding your first quiz!</p>
+                <a asp-controller="Quiz" asp-action="NewQuiz" class="btn btn-primary mt-3">New Quiz</a>
+            </div>
         }
-    </tbody>
-</table>
+        else{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th style="width: 180px;">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        
+            @foreach (var quiz in Model)
+            {
+                <tr>
+                    <td>@quiz.Title</td>
+                    <td>@quiz.Description</td>
+                    <td>
+                        @if (quiz.IsSubmitted)
+                        {
+                            <span class="badge bg-success">Submitted</span>
+                            <p>Total Score: @quiz.TotalScore</p>
+                            <a asp-action="OpenQuiz" asp-route-id="@quiz.Id" class="btn btn-sm btn-info">View</a>
+
+
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">Not Submitted</span>
+                            <a asp-action="OpenQuiz" asp-route-id="@quiz.Id" class="btn btn-sm btn-info">Open</a>
+					    }
+                        <form asp-action="DeleteUserQuiz" asp-route-id="@quiz.Id" method="post" style="display:inline" onsubmit="return confirm('Are you sure you want to delete this quiz?');">
+                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        
+        </tbody>
+    </table>
+}
