@@ -8,7 +8,7 @@
 # Build results
 bin/
 obj/
-out/
+out/git rm -r --cached .vs/
 [Bb]uild/
 [Ll]og/
 TestResults/

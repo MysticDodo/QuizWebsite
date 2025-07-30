@@ -11,28 +11,26 @@ namespace SimpleQuizApp.Controllers
     public class QuizController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly QuizDbContext _quiz_context;
-        private readonly UserQuizDbContext _user_quiz_context;
+        private readonly QuizService _quizService;
         private readonly QuizLoader _quizLoader = new QuizLoader();
 
-        public QuizController(ILogger<HomeController> logger, QuizDbContext quiz_context, UserQuizDbContext user_quiz_context)
+        public QuizController(ILogger<HomeController> logger, QuizService quizService)
         {
             _logger = logger;
-            _quiz_context = quiz_context;
-            _user_quiz_context = user_quiz_context;
+            _quizService = quizService;
         }
 
         // Displays all quiz pre sets for my quizzes tab
         public IActionResult UserQuiz()
         {
-            var quizzes = _user_quiz_context.Quizzes.ToList();
+            var quizzes = _quizService.GetUserQuizzes();
             return View(quizzes);
         }
 
         // Open quiz by ID (for user quizzes)
         public IActionResult OpenQuiz(int id)
         {
-            var quiz = _user_quiz_context.Quizzes.Include(q => q.Questions).ThenInclude(q => q.Options).FirstOrDefault(q => q.Id == id);
+            var quiz = _quizService.GetUserQuizById(id);
             if (quiz == null)
             {
                 return NotFound();
@@ -66,9 +64,7 @@ namespace SimpleQuizApp.Controllers
             if (actionType == "save")
             {
                 // Logic to save quiz without submission
-                quiz.IsSubmitted = false; // Mark quiz as not submitted
-                _user_quiz_context.Quizzes.Update(quiz); // Update quiz in the user quiz database
-                _user_quiz_context.SaveChanges();
+                _quizService.SaveUserQuiz(quiz); // Save the quiz to the user quiz database
                 return RedirectToAction("UserQuiz");
             }
             else if (actionType == "submit")
@@ -88,9 +84,7 @@ namespace SimpleQuizApp.Controllers
                     _logger.LogInformation(question.ChosenOption.ToString());
 
                 }
-                quiz.IsSubmitted = true; // Mark quiz as submitted
-                _user_quiz_context.Quizzes.Update(quiz); // Update quiz with total score
-                _user_quiz_context.SaveChanges();
+                _quizService.SubmitUserQuiz(quiz); // Mark quiz as submitted and save to user quiz database
                 return RedirectToAction("OpenQuiz", new { id = quiz.Id });
             }
             return View(quiz);
@@ -109,7 +103,7 @@ namespace SimpleQuizApp.Controllers
         // Loads all quizzes from quiz db
         public IActionResult NewQuiz()
         {
-            List<Quiz> quizzes = _quiz_context.Quizzes.ToList();
+            List<Quiz> quizzes = _quizService.GetAllQuizzes();
             return View(quizzes);
         }
 
@@ -118,7 +112,7 @@ namespace SimpleQuizApp.Controllers
         public IActionResult AddQuiz([FromForm]int quizId)
         {
             // get the quiz from the quiz database by ID
-            Quiz quiz = _quiz_context.Quizzes.Include(q => q.Questions).ThenInclude(q => q.Options).FirstOrDefault(q => q.Id == quizId);
+            Quiz quiz = _quizService.GetQuizById(quizId);
             quiz.Id = 0; // Reset the ID to ensure a new entry in the user quiz database
             foreach (var question in quiz.Questions) // Reset the IDs of questions and options
             {
@@ -129,8 +123,7 @@ namespace SimpleQuizApp.Controllers
                 }
             }
             // add the quiz to the user quiz database
-            _user_quiz_context.Quizzes.Add(quiz);
-            _user_quiz_context.SaveChanges(); // Save the new quiz to the user quiz database
+            _quizService.AddUserQuiz(quiz);
             _logger.LogInformation("New quiz added: " + quiz.Title);
             return RedirectToAction("UserQuiz");
         }
@@ -162,8 +155,7 @@ namespace SimpleQuizApp.Controllers
                 // Return the form view with validation errors
                 return RedirectToAction("CreateQuiz"); 
             }
-            _quiz_context.Quizzes.Add(quiz);
-            _quiz_context.SaveChanges(); // Save the new quiz to the user quiz database
+            _quizService.AddQuiz(quiz); // Add the quiz to the quiz database
             _logger.LogInformation("New quiz created: " + quiz.Title);
             return RedirectToAction("NewQuiz");
         }
@@ -191,8 +183,7 @@ namespace SimpleQuizApp.Controllers
                 }
 
                 // Add the quiz to the database
-                _quiz_context.Quizzes.Add(quiz);
-                _quiz_context.SaveChanges(); // Save the new quiz to the user quiz database
+                _quizService.AddQuiz(quiz);
 
                 return RedirectToAction("NewQuiz");
             }
@@ -202,11 +193,10 @@ namespace SimpleQuizApp.Controllers
 
         public IActionResult DeleteUserQuiz(int id)
         {
-            var quiz = _user_quiz_context.Quizzes.Find(id);
+            var quiz = _quizService.GetUserQuizById(id);
             if (quiz != null)
             {
-                _user_quiz_context.Quizzes.Remove(quiz);
-                _user_quiz_context.SaveChanges();
+                _quizService.DeleteUserQuiz(id); // Delete the quiz from the user quiz database
                 _logger.LogInformation("Quiz deleted: " + quiz.Title);
             }
             return RedirectToAction("UserQuiz");

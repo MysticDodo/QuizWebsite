@@ -24,6 +24,9 @@ namespace SimpleQuizApp.Models
             Description = description;
         }
 
+        [ForeignKey("userId")]
+        public User? User { get; set; }
+
         public Quiz() { }
         public void AddQuestion(Question question)
         {

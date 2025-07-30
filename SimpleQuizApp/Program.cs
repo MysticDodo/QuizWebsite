@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SimpleQuizApp.Data;
 
@@ -9,7 +10,21 @@ builder.Services.AddDbContext<QuizDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("Quizzes")));
 builder.Services.AddDbContext<UserQuizDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("UserQuizzes")));
+builder.Services.AddScoped<SimpleQuizApp.Services.QuizService>();
 
+// Configure Identity services
+builder.Services.AddIdentity<SimpleQuizApp.Models.User, IdentityRole>(options =>
+{
+    options.Password.RequireDigit = true;
+    options.Password.RequiredLength = 6;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = true;
+    options.User.RequireUniqueEmail = true;
+    options.SignIn.RequireConfirmedAccount = false; 
+    options.SignIn.RequireConfirmedEmail = false; 
+    options.SignIn.RequireConfirmedPhoneNumber = false; 
+}).AddEntityFrameworkStores<UserQuizDbContext>()
+  .AddDefaultTokenProviders();
 
 var app = builder.Build();
 

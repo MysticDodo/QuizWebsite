@@ -22,6 +22,7 @@
             <tr>
                 <td>@quiz.Title</td>
                 <td>@quiz.Description</td>
+                <td>Number of Questions: @quiz.Questions.Count</td>
                 <td>
                     <form asp-action="AddQuiz" asp-route-id="@quiz" method="post" style="display:inline">
 						<input type="hidden" name="quizId"" value="@quiz.Id" />
